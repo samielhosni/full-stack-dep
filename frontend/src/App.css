@@ -1,0 +1,256 @@
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #ffffff;
+  color: #333;
+}
+
+.App {
+  text-align: center;
+  padding: 2rem;
+}
+
+/* Make logo bigger for both modes */
+.logo, .hpe-logo {
+  width: 220px;
+  height: auto;
+  margin: 20px auto;
+  display: block;
+}
+
+/* Unified h1 styles (used in both sections) */
+h1 {
+  text-align: center;
+  color: #00b388; /* default chatbot green */
+  font-weight: 700;
+  margin-bottom: 2rem;
+}
+
+/* Backoffice overrides for h1 */
+.container h1 {
+  color: #00b388; /* changed to chatbot green */
+  margin-bottom: 30px;
+  font-weight: 700;
+}
+
+form {
+  margin-bottom: 1rem;
+}
+
+input {
+  padding: 0.5rem;
+  width: 300px;
+  font-size: 1rem;
+  margin-right: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+button {
+  background-color: #00b388;
+  color: white;
+  border: none;
+  padding: 0.55rem 1.2rem;
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(0, 122, 51, 0.3);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+button:hover {
+  background-color: #00916e;
+}
+
+/* Chatbot Answer Box */
+.answer-box {
+  margin-top: 2rem;
+  background-color: #f5f5f5;
+  border-left: 4px solid #00b388;
+  padding: 1rem;
+  display: inline-block;
+  max-width: 600px;
+}
+
+/* Backoffice container */
+.container {
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+  background-color: #ffffff;
+
+  /* Make container a flex column to position banned at bottom */
+  display: flex;
+  flex-direction: column;
+  min-height: 80vh;
+  position: relative;
+}
+
+/* Filter dropdown section */
+.filter {
+  margin-bottom: 20px;
+  font-weight: 600;
+  color: #004225;
+}
+
+.filter select {
+  margin-left: 10px;
+  padding: 6px 10px;
+  font-size: 15px;
+  border: 1.5px solid #007a33;
+  border-radius: 4px;
+  background-color: white;
+  color: #004225;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.filter select:hover,
+.filter select:focus {
+  border-color: #004225;
+  outline: none;
+}
+
+/* Requests table layout */
+.table {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex-grow: 1; /* Grow to fill vertical space */
+  margin-top: 20px;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #c5d3d7;
+  padding: 14px 18px;
+  border-radius: 8px;
+  background-color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  font-size: 15px;
+  color: #003827;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Harmful or banned messages */
+.banned-row {
+  background-color: #ffe5e5;
+  border-color: #b00020;
+  color: #7a0000;
+  font-weight: 600;
+}
+.logout-btn-container {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.logout-btn {
+  background-color: #b00020;
+  padding: 8px 16px;
+  border-radius: 5px;
+  font-weight: 600;
+  color: white;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.logout-btn:hover {
+  background-color: #8a0018;
+}
+.harmful-row {
+  background-color: #fff1f1;
+  border-color: #b00020;
+  color: #7a0000;
+  font-weight: 600;
+}
+
+/* Ban/Unban Buttons */
+button.ban {
+  background-color: #00b388; /* changed to chatbot green */
+  box-shadow: 0 4px 6px rgba(0, 122, 51, 0.5);
+  color: white;
+}
+
+button.ban:hover {
+  background-color: #00916e; /* darker green on hover */
+  box-shadow: 0 6px 10px rgba(0, 145, 110, 0.6);
+}
+
+button.unban {
+  background-color: #6c757d;
+  box-shadow: 0 4px 6px rgba(108, 117, 125, 0.5);
+}
+
+button.unban:hover {
+  background-color: #495057;
+  box-shadow: 0 6px 10px rgba(73, 80, 87, 0.6);
+}
+
+/* Logo container */
+.logo-container {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Banned users display fixed at bottom */
+.banned {
+  position: absolute;
+  bottom: 10px;
+  left: 20px;
+  right: 20px;
+  background-color: #f8f8f8;
+  padding: 10px;
+  font-size: 14px;
+  border-top: 1px solid #ccc;
+  text-align: center;
+  color: #b00020;
+  font-weight: 600;
+}
+
+/* Mode toggle buttons */
+button.admin-btn,
+button.user-btn {
+  background-color: #333;
+  margin: 0 8px;
+  padding: 10px 20px;
+  font-size: 0.95rem;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  font-weight: 600;
+}
+
+button.admin-btn:hover,
+button.user-btn:hover {
+  background-color: #555;
+}
+.login-container {
+  max-width: 400px;
+  margin: 100px auto;
+  padding: 2rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: #f0f0f0;
+  text-align: center;
+}
+.login-container input {
+  width: 100%;
+  padding: 0.6rem;
+  margin: 0.5rem 0;
+  border-radius: 5px;
+  border: 1px solid #aaa;
+}
+.login-container button {
+  padding: 0.6rem 1rem;
+  background-color: #007b5f;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
