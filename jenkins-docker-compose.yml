@@ -12,6 +12,7 @@ services:
       - jenkins_home:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
       - /usr/bin/docker:/usr/bin/docker  # gives Jenkins access to Docker CLI
+    
     restart: always
 
 volumes:

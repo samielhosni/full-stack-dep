@@ -1,6 +1,6 @@
 services:
   flask-backend:
-    build: ./flask-ollama
+    image: samihosni/backend-flask:latest
     container_name: flask-backend-app
     ports:
       - "5000:5000"
@@ -24,8 +24,7 @@ services:
     
 
   react-frontend:
-    build:
-      context: ./frontend
+    image: samihosni/frontend-react:latest
     container_name: react-frontend
     ports:
       - "3000:80"
