@@ -17,9 +17,8 @@ def query_ollama():
         response = requests.post(
             "http://ollama:11434/api/generate",
             json={
-                "model": "qwen",
+                "model": "llama3",
                 "prompt": prompt,
-                "format": "json",
                 "stream": False
             }
         )
