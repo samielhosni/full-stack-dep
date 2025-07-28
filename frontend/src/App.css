@@ -3,6 +3,10 @@ body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background-color: #ffffff;
   color: #333;
+  background-repeat: "no-repeat";
+  background-size: "contain";
+  background-position: "center top";
+  background-image:  url('./assets/back.png');
 }
 
 .App {
@@ -11,7 +15,8 @@ body {
 }
 
 /* Make logo bigger for both modes */
-.logo, .hpe-logo {
+.logo,
+.hpe-logo {
   width: 220px;
   height: auto;
   margin: 20px auto;
@@ -38,10 +43,10 @@ form {
 }
 
 input {
-  padding: 0.5rem;
-  width: 300px;
-  font-size: 1rem;
-  margin-right: 0.5rem;
+  padding: 0.3rem;
+  width: 400px;
+  font-size: 1.5rem;
+  margin-right: 10rem;
   border: 1px solid #ccc;
   border-radius: 5px;
 }
@@ -53,6 +58,8 @@ button {
   padding: 0.55rem 1.2rem;
   font-size: 1rem;
   border-radius: 5px;
+    width: 100px;
+
   cursor: pointer;
   font-weight: 600;
   box-shadow: 0 2px 4px rgba(0, 122, 51, 0.3);
@@ -69,8 +76,9 @@ button:hover {
   background-color: #f5f5f5;
   border-left: 4px solid #00b388;
   padding: 1rem;
+  margin-right: 10rem;
   display: inline-block;
-  max-width: 600px;
+  max-width: 700px;
 }
 
 /* Backoffice container */
@@ -78,9 +86,8 @@ button:hover {
   max-width: 800px;
   margin: auto;
   padding: 20px;
-  background-color: #ffffff;
+  background-color: #ffffff00;
 
-  /* Make container a flex column to position banned at bottom */
   display: flex;
   flex-direction: column;
   min-height: 80vh;
@@ -117,7 +124,7 @@ button:hover {
   display: flex;
   flex-direction: column;
   gap: 14px;
-  flex-grow: 1; /* Grow to fill vertical space */
+  flex-grow: 1;
   margin-top: 20px;
 }
 
@@ -142,8 +149,9 @@ button:hover {
   color: #7a0000;
   font-weight: 600;
 }
+
 .logout-btn-container {
-  position: absolute;
+  position: fixed;
   top: 20px;
   right: 20px;
   z-index: 1000;
@@ -163,6 +171,7 @@ button:hover {
 .logout-btn:hover {
   background-color: #8a0018;
 }
+
 .harmful-row {
   background-color: #fff1f1;
   border-color: #b00020;
@@ -172,13 +181,13 @@ button:hover {
 
 /* Ban/Unban Buttons */
 button.ban {
-  background-color: #00b388; /* changed to chatbot green */
+  background-color: #00b388;
   box-shadow: 0 4px 6px rgba(0, 122, 51, 0.5);
   color: white;
 }
 
 button.ban:hover {
-  background-color: #00916e; /* darker green on hover */
+  background-color: #00916e;
   box-shadow: 0 6px 10px rgba(0, 145, 110, 0.6);
 }
 
@@ -230,6 +239,7 @@ button.admin-btn:hover,
 button.user-btn:hover {
   background-color: #555;
 }
+
 .login-container {
   max-width: 400px;
   margin: 100px auto;
@@ -239,6 +249,7 @@ button.user-btn:hover {
   background-color: #f0f0f0;
   text-align: center;
 }
+
 .login-container input {
   width: 100%;
   padding: 0.6rem;
@@ -246,6 +257,7 @@ button.user-btn:hover {
   border-radius: 5px;
   border: 1px solid #aaa;
 }
+
 .login-container button {
   padding: 0.6rem 1rem;
   background-color: #007b5f;
@@ -253,4 +265,69 @@ button.user-btn:hover {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+}
+
+/* Sidebar Styles for Chat History */
+.sidebar {
+  width: 260px;
+  height: 100vh;
+  background: rgba(1, 169, 130, 0.8); /* HPE green with transparency */
+  backdrop-filter: blur(12px);
+  color: #f1f1f1;
+  padding: 32px 24px;
+  box-sizing: border-box;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.sidebar h3 {
+  margin: 0 0 24px 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #ffffff;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  padding-bottom: 10px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar li {
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border-left: 4px solid transparent;
+}
+
+.sidebar li:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-left: 4px solid #ffffff;
+  transform: scale(1.02);
+}
+
+.sidebar li strong {
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.sidebar li small {
+  color: #c0e8de;
+  font-size: 0.75rem;
+  margin-top: 4px;
+  font-style: italic;
 }

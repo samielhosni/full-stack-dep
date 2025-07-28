@@ -1,53 +1,58 @@
 import React, { useState } from "react";
-import "./Loginn.css"; // Import the CSS file
- 
-const staticUsers = [
-  { username: "admin", password: "admin123", role: "admin" },
-  { username: "user", password: "user123", role: "user" },
-];
- 
-function Loginn({ onLogin }) {
+import { useNavigate } from "react-router-dom";
+import "./Loginn.css"; // Make sure this is the correct path
+
+import logo from "./assets/hpe-logo-with-back.png"; // ✅ Import your logo
+
+const Loginn = ({ onLogin }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
- 
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const foundUser = staticUsers.find(
-      (u) => u.username === username && u.password === password
-    );
-    if (foundUser) {
-      onLogin(foundUser);
+    const response = {
+      username,
+      role: username === "admin" ? "admin" : "user",
+    };
+
+    onLogin(response);
+
+    if (response.role === "admin") {
+      navigate("/admin");
     } else {
-      setError("Invalid username or password");
+      navigate("/user");
     }
   };
- 
+
   return (
-<div className="login-background">
-<div className="login-container">
-<h2 className="login-title">Login</h2>
-<form onSubmit={handleSubmit} className="login-form">
-<input
-          type="text"
-          placeholder="Username"
-          className="login-input"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-<input
-          type="password"
-          placeholder="Password"
-          className="login-input"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-<button type="submit" className="login-button">Login</button>
-</form>
-      {error && <p className="login-error">{error}</p>}
-</div>
- </div>
+    <div className="login-background">
+      <div className="logo-container">
+        <img src={logo} alt="Logo" className="logo-image" />
+      </div>
+      <div className="login-container">
+        <h2 className="login-title">Login</h2>
+        <form className="login-form" onSubmit={handleSubmit}>
+          <input
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Username"
+            className="login-input"
+          />
+          <input
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            type="password"
+            placeholder="Password"
+            className="login-input"
+          />
+          <button type="submit" className="login-button">
+            Login
+          </button>
+        </form>
+      </div>
+    </div>
   );
-}
- 
+};
+
 export default Loginn;

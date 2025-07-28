@@ -1,6 +1,37 @@
+
 services:
+  postgres:
+    image: postgres:15
+    container_name: postgres-db
+    restart: always
+    environment:
+      POSTGRES_USER: hpe
+      POSTGRES_PASSWORD: ca1920
+      POSTGRES_DB: ai-assistant-db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  springboot-backend:
+    build: ./chat-history-service
+    container_name: springboot-app
+    restart: always
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ai-assistant-db  # <--- ✅ use 'postgres' (matches service name)
+      SPRING_DATASOURCE_USERNAME: hpe
+      SPRING_DATASOURCE_PASSWORD: ca1920
+    ports:
+      - "8083:8080"
+    networks:
+      - app-network
+
   flask-backend:
-    image: samihosni/backend-flask:latest
+    build: ./flask-ollama
     container_name: flask-backend-app
     ports:
       - "5000:5000"
@@ -9,8 +40,7 @@ services:
     networks:
       - app-network
     environment:
-      - OLLAMA_HOST=http://localhost:11434
-    
+      - OLLAMA_HOST=http://ollama:11434  # <--- ✅ fix localhost -> ollama (inside Docker network)
 
   ollama:
     image: ollama/ollama
@@ -20,16 +50,16 @@ services:
     networks:
       - app-network
     volumes:
-      - ollama-data:/root/.ollama   # Persist Ollama models and settings
-    
+      - ollama-data:/root/.ollama
 
   react-frontend:
-    image: samihosni/frontend-react:latest
+    build: ./frontend
     container_name: react-frontend
     ports:
       - "3000:80"
     depends_on:
       - flask-backend
+      - springboot-backend
     networks:
       - app-network
 
@@ -38,4 +68,5 @@ networks:
     driver: bridge
 
 volumes:
+  pgdata:
   ollama-data:
