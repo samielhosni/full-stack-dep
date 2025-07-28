@@ -18,7 +18,7 @@ function App({ user, mode, onLogout }) {
   // Fetch chat history when user changes
   useEffect(() => {
     if (user) {
-      fetch(`http://localhost:8083/chat-history/${user.id}`)
+fetch(`http://localhost:8083/chat-history/${user.username}`)
         .then((res) => res.json())
         .then((data) => setChatHistory(data))
         .catch((err) => console.error("Failed to fetch history", err));
@@ -52,38 +52,32 @@ function App({ user, mode, onLogout }) {
   };
 
   // Submit question (for user mode)
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await fetch("http://localhost:5000/query", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt: question }),
-      });
-      const data = await res.json();
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const res = await fetch("http://localhost:5000/query", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt: question }),
+    });
+
+    const data = await res.json();
+    console.log("AI Response full:", data);
+
+    if (data.response) {
       setAnswer(data.response);
-
-      // Save chat history
-      await fetch("http://localhost:8083/chat-history", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          sender: user.username,
-          content: question,
-          timestamp: new Date().toISOString(),
-        }),
-      });
-
-      setQuestion(""); // clear input
-
-      // Refresh chat history
-      fetch(`http://localhost:8083/chat-history/${user.id}`)
-        .then((res) => res.json())
-        .then((data) => setChatHistory(data));
-    } catch {
-      setAnswer("Failed to get response from AI assistant.");
+    } else {
+      setAnswer("No response from AI");
     }
-  };
+
+  } catch (err) {
+    console.error("Fetch/JSON Error:", err);
+    setAnswer("Failed to get response from AI assistant.");
+  }
+};
+
+
+
 
   if (mode === "user") {
     return (

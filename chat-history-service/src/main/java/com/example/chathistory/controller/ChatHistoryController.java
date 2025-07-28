@@ -1,7 +1,7 @@
 package com.example.chathistory.controller;
 
-import com.example.chathistory.model.ChatHistory;
-import com.example.chathistory.repository.ChatHistoryRepository;
+import com.example.chathistory.model.ChatMessage;
+import com.example.chathistory.repository.ChatMessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,11 +13,11 @@ import java.util.List;
 public class ChatHistoryController {
 
     @Autowired
-    private ChatHistoryRepository chatHistoryRepository;
+    private ChatMessageRepository chatMessageRepository;
 
-    @GetMapping("/{userId}")
-    public List<ChatHistory> getChatHistory(@PathVariable Long userId) {
-        return chatHistoryRepository.findByUserIdOrderByTimestampDesc(userId);
-    }
+   @GetMapping("/{username}")
+public List<ChatMessage> getChatHistory(@PathVariable String username) {
+    return chatMessageRepository.findBySenderOrderByTimestampDesc(username);
+}
 }
 

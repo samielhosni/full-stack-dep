@@ -1,6 +1,6 @@
 package com.example.chathistory.repository;
 
-import com.example.chathistory.model.ChatHistory;
+import com.example.chathistory.model.ChatMessage;
 import com.example.chathistory.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 

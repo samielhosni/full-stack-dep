@@ -1,21 +1,31 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./Loginn.css"; // Make sure this is the correct path
-
-import logo from "./assets/hpe-logo-with-back.png"; // ✅ Import your logo
+import "./Loginn.css";
+import logo from "./assets/hpe-logo-with-back.png";
 
 const Loginn = ({ onLogin }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!username || !password) {
+      setError("Please fill in both fields");
+      return;
+    }
+
+    // Simulate auth API response
     const response = {
       username,
       role: username === "admin" ? "admin" : "user",
+      id: username === "admin" ? 1 : 2, // example ID
     };
 
+    // Save user to localStorage
+    localStorage.setItem("user", JSON.stringify(response));
     onLogin(response);
 
     if (response.role === "admin") {
@@ -46,6 +56,7 @@ const Loginn = ({ onLogin }) => {
             placeholder="Password"
             className="login-input"
           />
+          {error && <p style={{ color: "red" }}>{error}</p>}
           <button type="submit" className="login-button">
             Login
           </button>
