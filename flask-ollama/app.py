@@ -27,7 +27,6 @@ def query_ollama():
             return jsonify({"error": "Ollama API error", "details": response.text}), 500
 
         data = response.json()
-        print("Ollama Raw Response:", data)
 
         raw_response = data.get("response", "")
 

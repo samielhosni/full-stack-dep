@@ -9,31 +9,42 @@ const Loginn = ({ onLogin }) => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    if (!username || !password) {
-      setError("Please fill in both fields");
+  if (!username || !password) {
+    setError("Please fill in both fields");
+    return;
+  }
+
+  try {
+    const res = await fetch("http://localhost:8083/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+    });
+
+    if (!res.ok) {
+      setError("Invalid credentials");
       return;
     }
 
-    // Simulate auth API response
-    const response = {
-      username,
-      role: username === "admin" ? "admin" : "user",
-      id: username === "admin" ? 1 : 2, // example ID
-    };
+    const user = await res.json();
+    localStorage.setItem("user", JSON.stringify(user));
+    onLogin(user);
 
-    // Save user to localStorage
-    localStorage.setItem("user", JSON.stringify(response));
-    onLogin(response);
-
-    if (response.role === "admin") {
+    if (user.role === "admin") {
       navigate("/admin");
     } else {
       navigate("/user");
     }
-  };
+
+  } catch (err) {
+    console.error("Login error:", err);
+    setError("Login failed");
+  }
+};
+
 
   return (
     <div className="login-background">

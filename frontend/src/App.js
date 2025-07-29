@@ -1,4 +1,3 @@
-// App.js
 import React, { useEffect, useState } from "react";
 import "./App.css";
 import hpeLogo from "./assets/hpe-logo-with-back.png";
@@ -15,29 +14,78 @@ function App({ user, mode, onLogout }) {
   const containsHarmfulWord = (text) =>
     harmfulWords.some((word) => text.toLowerCase().includes(word));
 
-  // Fetch chat history when user changes
+  const chatPairs = [];
+  if (chatHistory.length > 0) {
+    for (let i = 0; i < chatHistory.length - 1; i++) {
+      if (
+        chatHistory[i].sender !== "assistant" &&
+        chatHistory[i + 1] &&
+        chatHistory[i + 1].sender === "assistant"
+      ) {
+        chatPairs.push({
+          question: chatHistory[i].content,
+          answer: chatHistory[i + 1].content,
+        });
+      }
+    }
+  }
+
+  useEffect(() => {
+    const fetchHistory = async () => {
+      try {
+        const response = await fetch("http://localhost:8083/chat-history/all");
+        const data = await response.json();
+        setChatHistory(data); // Set full chat history from DB
+      } catch (error) {
+        console.error("Error fetching chat history:", error);
+      }
+    };
+
+    fetchHistory();
+  }, []);
+
   useEffect(() => {
     if (user) {
-fetch(`http://localhost:8083/chat-history/${user.username}`)
-        .then((res) => res.json())
-        .then((data) => setChatHistory(data))
-        .catch((err) => console.error("Failed to fetch history", err));
+      const fetchMessages = async () => {
+        try {
+          const response = await fetch("http://localhost:8083/chat-history/all");
+          const data = await response.json();
+          setChatHistory(data);
+        } catch (error) {
+          console.error("Error fetching chat history:", error);
+        }
+      };
+
+      fetchMessages();
+      const interval = setInterval(fetchMessages, 5000);
+      return () => clearInterval(interval);
     }
   }, [user]);
 
-  // Example admin requests and banned users
   useEffect(() => {
     if (mode === "admin") {
       const initialRequests = [
         { id: 1, sender: "user1", content: "Hello!", timestamp: new Date() },
-        { id: 2, sender: "assistant", content: "Hi! How can I assist you?", timestamp: new Date() },
-        { id: 3, sender: "user1", content: "This is a badword1 message.", timestamp: new Date() },
+        {
+          id: 2,
+          sender: "assistant",
+          content: "Hi! How can I assist you?",
+          timestamp: new Date(),
+        },
+        {
+          id: 3,
+          sender: "user1",
+          content: "This is a badword1 message.",
+          timestamp: new Date(),
+        },
       ];
       setRequests(initialRequests);
       const usersToBan = [
         ...new Set(
           initialRequests
-            .filter((r) => r.sender !== "assistant" && containsHarmfulWord(r.content))
+            .filter(
+              (r) => r.sender !== "assistant" && containsHarmfulWord(r.content)
+            )
             .map((r) => r.sender)
         ),
       ];
@@ -51,47 +99,64 @@ fetch(`http://localhost:8083/chat-history/${user.username}`)
     );
   };
 
-  // Submit question (for user mode)
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    const res = await fetch("http://localhost:5000/query", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt: question }),
-    });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await saveAnswerToDB(question, user); // Save user message to DB
 
-    const data = await res.json();
-    console.log("AI Response full:", data);
+    try {
+      const res = await fetch("http://localhost:5000/query", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: question }),
+      });
 
-    if (data.response) {
-      setAnswer(data.response);
-    } else {
-      setAnswer("No response from AI");
+      const data = await res.json();
+      console.log("AI Response full:", data);
+
+      if (data.response) {
+        setAnswer(data.response);
+        await saveAnswerToDB(data.response, "assistant"); // Save assistant message to DB
+      } else {
+        setAnswer("No response from AI");
+      }
+    } catch (err) {
+      console.error("Fetch/JSON Error:", err);
+      setAnswer("Failed to get response from AI assistant.");
     }
 
-  } catch (err) {
-    console.error("Fetch/JSON Error:", err);
-    setAnswer("Failed to get response from AI assistant.");
-  }
-};
+    setQuestion(""); // Clear input after submission
+  };
 
-
-
+  const saveAnswerToDB = async (text, sender) => {
+    try {
+      await fetch("http://localhost:8083/chat-history/save", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          content: text,
+          sender: sender,
+        }),
+      });
+    } catch (err) {
+      console.error("Error saving chat message:", err);
+    }
+  };
 
   if (mode === "user") {
     return (
       <div className="App">
         <img src={hpeLogo} alt="HPE Logo" className="logo" />
-        <h1 style={{fontFamily: "monospace"}}>AI Assistant</h1>
+        <h1 style={{ fontFamily: "monospace" }}>AI Assistant</h1>
 
         <div style={{ display: "flex" }}>
           <div className="sidebar">
             <h3>Chat History</h3>
             <ul>
-              {chatHistory.map((msg, index) => (
+              {[...chatHistory].reverse().map((msg, index) => (
                 <li key={index}>
-                  <strong>{msg.sender}:</strong> {msg.content}
+                  <strong>{msg.sender || "Unknown"}:</strong> {msg.content}
                   <br />
                   <small>{new Date(msg.timestamp).toLocaleString()}</small>
                 </li>

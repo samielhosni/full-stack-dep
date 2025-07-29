@@ -2,24 +2,23 @@ package com.example.chathistory.service;
 
 import com.example.chathistory.model.ChatMessage;
 import com.example.chathistory.repository.ChatMessageRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.time.LocalDateTime;
+import java.lang.String;
 
 @Service
 public class ChatService {
 
-    private final ChatMessageRepository repo;
+    @Autowired
+    private ChatMessageRepository chatMessageRepository;
 
-    public ChatService(ChatMessageRepository repo) {
-        this.repo = repo;
-    }
-
-    public ChatMessage save(ChatMessage msg) {
-        return repo.save(msg);
-    }
-
-    public List<ChatMessage> findAll() {
-        return repo.findAll();
+    public ChatMessage save(String content, String sender) {
+        ChatMessage message = new ChatMessage();
+        message.setSender(sender); // You should replace this with real sender info
+        message.setContent(content);
+        message.setTimestamp(LocalDateTime.now());
+        return chatMessageRepository.save(message);
     }
 }
