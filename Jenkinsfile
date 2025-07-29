@@ -21,9 +21,10 @@ pipeline {
                     steps {
                         sh 'docker build --no-cache -t $DOCKERHUB_USER/frontend-react:latest ./frontend'
                         sh 'docker build -t $DOCKERHUB_USER/backend-flask:latest ./flask-ollama'
-                        dir('./chat-history-service') {  // Or whatever folder has pom.xml
-                
-                        sh 'mvn clean install -DskipTests'
+                        dir('./chat-history-service') 
+                            {
+                                        sh 'mvn clean install -DskipTests'
+                            }
                         sh 'docker build -t $DOCKERHUB_USER/springboot-app:latest ./chat-history-service'
                 }
             }
