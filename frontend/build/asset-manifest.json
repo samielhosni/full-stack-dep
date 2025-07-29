@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/static/css/main.9070dfe6.css",
+    "main.js": "/static/js/main.afacff87.js",
+    "static/js/453.670e15c7.chunk.js": "/static/js/453.670e15c7.chunk.js",
+    "static/media/back.png": "/static/media/back.fc2020abd7fe1e40be84.png",
+    "static/media/hpe-logo-with-back.png": "/static/media/hpe-logo-with-back.ee6c59743f4ab0039f28.png",
+    "index.html": "/index.html",
+    "main.9070dfe6.css.map": "/static/css/main.9070dfe6.css.map",
+    "main.afacff87.js.map": "/static/js/main.afacff87.js.map",
+    "453.670e15c7.chunk.js.map": "/static/js/453.670e15c7.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.9070dfe6.css",
+    "static/js/main.afacff87.js"
+  ]
+}

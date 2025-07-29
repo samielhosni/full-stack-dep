@@ -2,10 +2,15 @@
 FROM node:20 AS build
 
 WORKDIR /app
+
+# Install react-scripts globally
+RUN npm install -g react-scripts
+
 COPY package.json package-lock.json ./
 RUN npm install
 
 COPY . .
+
 RUN npm run build
 
 # Serve stage

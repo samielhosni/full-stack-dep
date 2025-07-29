@@ -10,24 +10,25 @@ pipeline {
     }
 
     stages {
-        stage('Clone Repo') {
-            steps {
-                git 'https://github.com/samielhosni/full-stack-dep.git'
+         stage('Clone Repo') {
+                steps {
+                    git branch: 'main', credentialsId: 'github-creds', url: 'https://github.com/samielhosni/full-stack-dep.git'
+                }
             }
-        }
 
-        stage('Build Docker Images') {
-            steps {
-                bat 'docker build -t %DOCKERHUB_USER%/frontend-react:latest .\\frontend'
-                bat 'docker build -t %DOCKERHUB_USER%/backend-flask:latest .\\flask-ollama'
-                bat 'docker build -t %DOCKERHUB_USER%/springboot-app:latest .\\chat-history-service'
+
+            stage('Build Docker Images') {
+                    steps {
+                        sh 'docker build --no-cache -t $DOCKERHUB_USER/frontend-react:latest ./frontend'
+                        sh 'docker build -t $DOCKERHUB_USER/backend-flask:latest ./flask-ollama'
+                        sh 'docker build -t $DOCKERHUB_USER/springboot-app:latest ./chat-history-service'
+                }
             }
-        }
 
         stage('Push to Docker Hub') {
             steps {
                 withCredentials([usernamePassword(credentialsId: DOCKERHUB_CREDENTIALS_ID, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                    bat """
+                    sh """
                         echo %PASSWORD% | docker login -u %USERNAME% --password-stdin
                         docker push %DOCKERHUB_USER%/frontend-react:latest
                         docker push %DOCKERHUB_USER%/backend-flask:latest
