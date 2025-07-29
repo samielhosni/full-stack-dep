@@ -16,7 +16,7 @@ services:
       - app-network
 
   springboot-backend:
-    build: ./chat-history-service
+    image: springboot-app:latest
     container_name: springboot-app
     restart: always
     depends_on:
@@ -31,7 +31,7 @@ services:
       - app-network
 
   flask-backend:
-    build: ./flask-ollama
+    image: backend-flask:latest
     container_name: flask-backend-app
     ports:
       - "5000:5000"
@@ -53,7 +53,7 @@ services:
       - ollama-data:/root/.ollama
 
   react-frontend:
-    build: ./frontend
+    image: frontend-react:lates
     container_name: react-frontend
     ports:
       - "3000:80"

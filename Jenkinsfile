@@ -20,6 +20,7 @@ pipeline {
             steps {
                 bat 'docker build -t %DOCKERHUB_USER%/frontend-react:latest .\\frontend'
                 bat 'docker build -t %DOCKERHUB_USER%/backend-flask:latest .\\flask-ollama'
+                bat 'docker build -t %DOCKERHUB_USER%/springboot-app:latest .\\chat-history-service'
             }
         }
 
@@ -30,12 +31,13 @@ pipeline {
                         echo %PASSWORD% | docker login -u %USERNAME% --password-stdin
                         docker push %DOCKERHUB_USER%/frontend-react:latest
                         docker push %DOCKERHUB_USER%/backend-flask:latest
+                        docker push %DOCKERHUB_USER%/springboot-app:latest
                     """
                 }
             }
         }
 
-        stage('Deploy to Remote VM') {
+        /*stage('Deploy to Remote VM') {
             steps {
                 sshagent([SSH_CREDENTIALS_ID]) {
                     sh """
@@ -51,6 +53,6 @@ pipeline {
                     """
                 }
             }
-        }
+        } */
     }
 }
