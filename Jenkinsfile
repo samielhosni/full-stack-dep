@@ -32,12 +32,13 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 withCredentials([usernamePassword(credentialsId: DOCKERHUB_CREDENTIALS_ID, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                    sh """
-                        echo %PASSWORD% | docker login -u %USERNAME% --password-stdin
-                        docker push %DOCKERHUB_USER%/frontend-react:latest
-                        docker push %DOCKERHUB_USER%/backend-flask:latest
-                        docker push %DOCKERHUB_USER%/springboot-app:latest
+                 sh """
+                        echo $PASSWORD | docker login -u $USERNAME --password-stdin
+                        docker push $DOCKERHUB_USER/frontend-react:latest
+                        docker push $DOCKERHUB_USER/backend-flask:latest
+                        docker push $DOCKERHUB_USER/springboot-app:latest
                     """
+
                 }
             }
         }
