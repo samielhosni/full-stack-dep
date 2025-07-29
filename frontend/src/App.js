@@ -9,10 +9,13 @@ function App({ user, mode, onLogout }) {
   const [requests, setRequests] = useState([]);
   const [bannedUsers, setBannedUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState("all");
+  const [username, setUsername] = useState(null);
 
   const harmfulWords = ["badword1", "badword2", "spamword"];
   const containsHarmfulWord = (text) =>
     harmfulWords.some((word) => text.toLowerCase().includes(word));
+
+
 
   const chatPairs = [];
   if (chatHistory.length > 0) {
@@ -101,7 +104,7 @@ function App({ user, mode, onLogout }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await saveAnswerToDB(question, user); // Save user message to DB
+    await saveAnswerToDB(question, username); // Save user message to DB
 
     try {
       const res = await fetch("http://localhost:5000/query", {
@@ -115,7 +118,7 @@ function App({ user, mode, onLogout }) {
 
       if (data.response) {
         setAnswer(data.response);
-        await saveAnswerToDB(data.response, "assistant"); // Save assistant message to DB
+        await saveAnswerToDB(data.response, "ASSISTANT"); // Save assistant message to DB
       } else {
         setAnswer("No response from AI");
       }
@@ -127,28 +130,38 @@ function App({ user, mode, onLogout }) {
     setQuestion(""); // Clear input after submission
   };
 
-  const saveAnswerToDB = async (text, sender) => {
-    try {
-      await fetch("http://localhost:8083/chat-history/save", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          content: text,
-          sender: sender,
-        }),
-      });
-    } catch (err) {
-      console.error("Error saving chat message:", err);
+      useEffect(() => {
+    const storedUser = localStorage.getItem("username");
+    setUsername(storedUser);  // store username in state for use in handleSubmit
+  }, []);
+
+const saveAnswerToDB = async (text, sender) => {
+  try {
+    const response = await fetch("http://localhost:8083/chat-history/save", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json", // Important!
+      },
+      body: JSON.stringify({
+        content: text,
+        sender: sender, // This must be a string like "sami" or "assistant"
+      }),
+    });
+
+    if (!response.ok) {
+      console.error("Failed to save chat message:", await response.text());
     }
-  };
+  } catch (err) {
+    console.error("Error saving message to DB:", err);
+  }
+};
+
 
   if (mode === "user") {
     return (
       <div className="App">
         <img src={hpeLogo} alt="HPE Logo" className="logo" />
-        <h1 style={{ fontFamily: "monospace" }}>AI Assistant</h1>
+        <h1 style={{ fontFamily: "monospace" }}> AI ASSISTANT </h1>
 
         <div style={{ display: "flex" }}>
           <div className="sidebar">
@@ -156,7 +169,7 @@ function App({ user, mode, onLogout }) {
             <ul>
               {[...chatHistory].reverse().map((msg, index) => (
                 <li key={index}>
-                  <strong>{msg.sender || "Unknown"}:</strong> {msg.content}
+                  <strong>{msg.sender || "USER"}:</strong> {msg.content}
                   <br />
                   <small>{new Date(msg.timestamp).toLocaleString()}</small>
                 </li>

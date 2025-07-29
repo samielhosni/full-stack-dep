@@ -14,7 +14,7 @@ public class ChatService {
     @Autowired
     private ChatMessageRepository chatMessageRepository;
 
-    public ChatMessage save(String content, String sender) {
+    public ChatMessage save(String content, String sender ) {
         ChatMessage message = new ChatMessage();
         message.setSender(sender); // You should replace this with real sender info
         message.setContent(content);

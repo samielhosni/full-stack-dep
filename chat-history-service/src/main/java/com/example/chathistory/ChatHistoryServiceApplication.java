@@ -21,9 +21,7 @@ public class ChatHistoryServiceApplication {
 			if (userRepo.count() == 0) {
 				userRepo.saveAll(List.of(
 						new User("admin", "admin123", "admin"),
-						new User("sami", "sami123", "user"),
-						new User("mariem", "mariem123", "user"),
-						new User("mayssa", "mayssa123", "user")
+						new User("User", "user123", "user")
 				));
 			}
 		};

@@ -52,7 +52,7 @@ const handleSubmit = async (e) => {
         <img src={logo} alt="Logo" className="logo-image" />
       </div>
       <div className="login-container">
-        <h2 className="login-title">Login</h2>
+        <h2 className="login-title">Try AI-ASSISTANT !</h2>
         <form className="login-form" onSubmit={handleSubmit}>
           <input
             value={username}

@@ -38,6 +38,7 @@ public class ChatHistoryController {
     public static class ChatMessageDTO {
         private String content;
         private String sender;
+         public ChatMessageDTO() {} 
 
         public String getContent() { return content; }
         public void setContent(String content) { this.content = content; }
