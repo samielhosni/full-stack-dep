@@ -51,7 +51,7 @@ pipeline {
                             docker pull $DOCKERHUB_USER/frontend-react:latest
                             docker pull $DOCKERHUB_USER/backend-flask:latest
                             rm -rf full-stack-dep || true
-                            git branch: 'main', credentialsId: 'github-creds', url: 'https://github.com/samielhosni/full-stack-dep.git'
+                            git clone -b main https://github.com/samielhosni/full-stack-dep.git
                             cd full-stack-dep
                             docker compose down || true
                             docker compose up -d
