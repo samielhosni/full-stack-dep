@@ -5,8 +5,8 @@ pipeline {
         DOCKERHUB_CREDENTIALS_ID = 'dockerhub-credentials'     // Jenkins credentials ID for Docker Hub
         SSH_CREDENTIALS_ID = 'vm-ssh-creds'                    // Jenkins credentials ID for VM access
         DOCKERHUB_USER = 'samihosni'
-        REMOTE_USER = 'youruser'
-        REMOTE_HOST = 'your.remote.ip'
+        REMOTE_USER = 'remote'
+        REMOTE_HOST = '192.168.32.128'
     }
 
     stages {
@@ -43,7 +43,7 @@ pipeline {
             }
         }
 
-        /*stage('Deploy to Remote VM') {
+        stage('Deploy to Remote VM') {
             steps {
                 sshagent([SSH_CREDENTIALS_ID]) {
                     sh """
@@ -59,6 +59,6 @@ pipeline {
                     """
                 }
             }
-        } */
+        } 
     }
 }
