@@ -56,9 +56,9 @@ pipeline {
                         sh "ssh -o StrictHostKeyChecking=no $REMOTE_USER@$REMOTE_HOST 'echo \"$DOCKERHUB_PASSWORD\" | docker login -u \"$DOCKERHUB_USERNAME\" --password-stdin'"
 
                         // Pull latest Docker images
-                        sh "ssh $REMOTE_USER@$REMOTE_HOST 'docker login | docker pull $DOCKERHUB_USER/frontend-react:latest'"
-                        sh "ssh $REMOTE_USER@$REMOTE_HOST 'docker login | docker pull $DOCKERHUB_USER/backend-flask:latest'"
-                        sh "ssh $REMOTE_USER@$REMOTE_HOST 'docker login | docker pull $DOCKERHUB_USER/springboot-app:latest'"
+                        sh "ssh $REMOTE_USER@$REMOTE_HOST 'docker login | docker pull samihosni/frontend-react:latest'"
+                        sh "ssh $REMOTE_USER@$REMOTE_HOST 'docker login | docker pull samihosni/backend-flask:latest'"
+                        sh "ssh $REMOTE_USER@$REMOTE_HOST 'docker login | docker pull samihosni/springboot-app:latest'"
 
                         // Clean and clone repository
                         sh "ssh $REMOTE_USER@$REMOTE_HOST 'rm -rf full-stack-dep || true'"
