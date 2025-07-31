@@ -48,29 +48,29 @@ pipeline {
         stage('Deploy to Remote VM') {
             steps {
                 withCredentials([
-                    usernamePassword(credentialsId: 'github-creds', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_TOKEN'),
+                    usernamePassword(credentialsId: 'github-creds', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_TOKEN'),
                     usernamePassword(credentialsId: DOCKERHUB_CREDENTIALS_ID, usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')
                 ]) {
                     sshagent([SSH_CREDENTIALS_ID]) {
-
-                        // Docker Login on VM
+                        // Docker login on remote VM
                         sh "ssh -o StrictHostKeyChecking=no $REMOTE_USER@$REMOTE_HOST 'echo \"$DOCKERHUB_PASSWORD\" | docker login -u \"$DOCKERHUB_USERNAME\" --password-stdin'"
 
-                        // Pull latest images
+                        // Pull latest Docker images
                         sh "ssh $REMOTE_USER@$REMOTE_HOST 'docker pull $DOCKERHUB_USER/frontend-react:latest'"
                         sh "ssh $REMOTE_USER@$REMOTE_HOST 'docker pull $DOCKERHUB_USER/backend-flask:latest'"
                         sh "ssh $REMOTE_USER@$REMOTE_HOST 'docker pull $DOCKERHUB_USER/springboot-app:latest'"
 
-                        // Clone the repo
+                        // Clean and clone repository
                         sh "ssh $REMOTE_USER@$REMOTE_HOST 'rm -rf full-stack-dep || true'"
-                        sh "ssh $REMOTE_USER@$REMOTE_HOST ' git, credentialsId: 'github-creds', url: 'https://github.com/samielhosni/full-stack-dep.git'"
+                        sh "ssh $REMOTE_USER@$REMOTE_HOST 'git clone https://$GIT_USERNAME:$GIT_TOKEN@github.com/samielhosni/full-stack-dep.git'"
 
-                        // Restart containers
+                        // Restart containers with Docker Compose
                         sh "ssh $REMOTE_USER@$REMOTE_HOST 'cd full-stack-dep && docker compose down || true && docker compose up -d'"
                     }
                 }
             }
         }
+
 
     }
 
