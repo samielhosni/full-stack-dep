@@ -44,28 +44,27 @@ pipeline {
             }
         }
 
-        stage('Deploy to Remote VM') {
-            steps {
-                sshagent([SSH_CREDENTIALS_ID]) {
-                    sh """
-                        ssh -o StrictHostKeyChecking=no $REMOTE_USER@$REMOTE_HOST '
-                            docker pull $DOCKERHUB_USER/frontend-react:latest
-                            docker pull $DOCKERHUB_USER/backend-flask:latest
-                            rm -rf full-stack-dep || true
-                            withCredentials([usernamePassword(credentialsId: 'github-creds', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_TOKEN')]) 
-                                {
-                            sh '''
-                            git clone https://$GIT_USER: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@github.com/samielhosni/full-stack-dep.git
-                                '''
-                                }
+    stage('Deploy to Remote VM') {
+    steps {
+        withCredentials([usernamePassword(credentialsId: 'github-creds', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_TOKEN')]) {
+            sshagent([SSH_CREDENTIALS_ID]) {
+                sh """
+                    ssh -o StrictHostKeyChecking=no $REMOTE_USER@$REMOTE_HOST << EOF
+                        docker pull $DOCKERHUB_USER/frontend-react:latest
+                        docker pull $DOCKERHUB_USER/backend-flask:latest
+                        docker pull $DOCKERHUB_USER/springboot-app:latest
 
-                            cd full-stack-dep
-                            docker compose down || true
-                            docker compose up -d
-                        '
-                    """
-                }
+                        rm -rf full-stack-dep || true
+                        git clone https://\$GIT_USER:\$GIT_TOKEN@github.com/samielhosni/full-stack-dep.git
+
+                        cd full-stack-dep
+                        docker compose down || true
+                        docker compose up -d
+                    EOF
+                """
             }
-        } 
+        }
     }
+}
+
 }
