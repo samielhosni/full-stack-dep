@@ -16,7 +16,7 @@ services:
       - app-network
 
   springboot-backend:
-    image: springboot-app:latest
+    image: samihosni/springboot-app:latest
     container_name: springboot-app
     restart: always
     depends_on:
@@ -31,7 +31,7 @@ services:
       - app-network
 
   flask-backend:
-    image: backend-flask:latest
+    image: samihosni/backend-flask:latest
     container_name: flask-backend-app
     ports:
       - "5000:5000"
@@ -53,7 +53,7 @@ services:
       - ollama-data:/root/.ollama
 
   react-frontend:
-    image: frontend-react:latest
+    image: samihosni/frontend-react:latest
     container_name: react-frontend
     ports:
       - "3000:80"
