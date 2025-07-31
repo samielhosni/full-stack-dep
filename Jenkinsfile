@@ -7,6 +7,7 @@ pipeline {
         DOCKERHUB_USER = 'samihosni'
         REMOTE_USER = 'remote'
         REMOTE_HOST = '192.168.32.128'
+        GIT_USER = "samielhosni"
     }
 
     stages {
@@ -51,7 +52,13 @@ pipeline {
                             docker pull $DOCKERHUB_USER/frontend-react:latest
                             docker pull $DOCKERHUB_USER/backend-flask:latest
                             rm -rf full-stack-dep || true
-                            git clone -b main https://github.com/samielhosni/full-stack-dep.git
+                            withCredentials([usernamePassword(credentialsId: 'github-creds', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_TOKEN')]) 
+                                {
+                            sh '''
+                            git clone https://$GIT_USER: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@github.com/samielhosni/full-stack-dep.git
+                                '''
+                                }
+
                             cd full-stack-dep
                             docker compose down || true
                             docker compose up -d
