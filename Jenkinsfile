@@ -63,7 +63,7 @@ pipeline {
 
                         // Clone the repo
                         sh "ssh $REMOTE_USER@$REMOTE_HOST 'rm -rf full-stack-dep || true'"
-                        sh "ssh $REMOTE_USER@$REMOTE_HOST 'git clone https://\$GIT_USER:\$GIT_TOKEN@github.com/samielhosni/full-stack-dep.git'"
+                        sh "ssh $REMOTE_USER@$REMOTE_HOST ' git, credentialsId: 'github-creds', url: 'https://github.com/samielhosni/full-stack-dep.git'"
 
                         // Restart containers
                         sh "ssh $REMOTE_USER@$REMOTE_HOST 'cd full-stack-dep && docker compose down || true && docker compose up -d'"
