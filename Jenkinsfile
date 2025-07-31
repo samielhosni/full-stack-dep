@@ -5,6 +5,7 @@ pipeline {
         DOCKERHUB_CREDENTIALS_ID = 'dockerhub-credentials'     // Jenkins credentials ID for Docker Hub
         SSH_CREDENTIALS_ID = 'vm-ssh-creds'                    // Jenkins credentials ID for VM access
         DOCKERHUB_USER = 'samihosni'
+        GIT_TOKEN = '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'
         REMOTE_USER = 'remote'
         REMOTE_HOST = '192.168.32.128'
         GIT_USER = "samielhosni"
@@ -44,12 +45,17 @@ pipeline {
             }
         }
 
-    stage('Deploy to Remote VM') {
+stage('Deploy to Remote VM') {
     steps {
-        withCredentials([usernamePassword(credentialsId: 'github-creds', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_TOKEN')]) {
+        withCredentials([
+            usernamePassword(credentialsId: 'github-creds', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_TOKEN'),
+            usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')
+        ]) {
             sshagent([SSH_CREDENTIALS_ID]) {
                 sh """
                     ssh -o StrictHostKeyChecking=no $REMOTE_USER@$REMOTE_HOST << EOF
+                        echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+
                         docker pull $DOCKERHUB_USER/frontend-react:latest
                         docker pull $DOCKERHUB_USER/backend-flask:latest
                         docker pull $DOCKERHUB_USER/springboot-app:latest
@@ -66,6 +72,7 @@ pipeline {
         }
     }
 }
+
     }
 
 }
