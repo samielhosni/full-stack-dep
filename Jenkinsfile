@@ -45,33 +45,32 @@ pipeline {
             }
         }
 
-stage('Deploy to Remote VM') {
-    steps {
-        withCredentials([
-            usernamePassword(credentialsId: 'github-creds', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_TOKEN'),
-            usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')
-        ]) {
-            sshagent([SSH_CREDENTIALS_ID]) {
-                sh """
-                    ssh -o StrictHostKeyChecking=no $REMOTE_USER@$REMOTE_HOST << EOF
-                        echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+        stage('Deploy to Remote VM') {
+            steps {
+                withCredentials([
+                    usernamePassword(credentialsId: 'github-creds', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_TOKEN'),
+                    usernamePassword(credentialsId: DOCKERHUB_CREDENTIALS_ID, usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')
+                ]) {
+                    sshagent([SSH_CREDENTIALS_ID]) {
 
-                        docker pull $DOCKERHUB_USER/frontend-react:latest
-                        docker pull $DOCKERHUB_USER/backend-flask:latest
-                        docker pull $DOCKERHUB_USER/springboot-app:latest
+                        // Docker Login on VM
+                        sh "ssh -o StrictHostKeyChecking=no $REMOTE_USER@$REMOTE_HOST 'echo \"$DOCKERHUB_PASSWORD\" | docker login -u \"$DOCKERHUB_USERNAME\" --password-stdin'"
 
-                        rm -rf full-stack-dep || true
-                        git clone https://\$GIT_USER:\$GIT_TOKEN@github.com/samielhosni/full-stack-dep.git
+                        // Pull latest images
+                        sh "ssh $REMOTE_USER@$REMOTE_HOST 'docker pull $DOCKERHUB_USER/frontend-react:latest'"
+                        sh "ssh $REMOTE_USER@$REMOTE_HOST 'docker pull $DOCKERHUB_USER/backend-flask:latest'"
+                        sh "ssh $REMOTE_USER@$REMOTE_HOST 'docker pull $DOCKERHUB_USER/springboot-app:latest'"
 
-                        cd full-stack-dep
-                        docker compose down || true
-                        docker compose up -d
-                    EOF
-                """
+                        // Clone the repo
+                        sh "ssh $REMOTE_USER@$REMOTE_HOST 'rm -rf full-stack-dep || true'"
+                        sh "ssh $REMOTE_USER@$REMOTE_HOST 'git clone https://\$GIT_USER:\$GIT_TOKEN@github.com/samielhosni/full-stack-dep.git'"
+
+                        // Restart containers
+                        sh "ssh $REMOTE_USER@$REMOTE_HOST 'cd full-stack-dep && docker compose down || true && docker compose up -d'"
+                    }
+                }
             }
         }
-    }
-}
 
     }
 
